@@ -1,24 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "ecofinds-backend",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@prisma/client": "^6.8.2",
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.8.2"
-=======
   "name": "ecofinds-frontend",
   "version": "0.1.0",
   "private": true,
@@ -57,6 +37,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
->>>>>>> 0974749 (Frontend)
   }
 }
