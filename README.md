@@ -141,12 +141,6 @@ MIT License
 
 ---
 
-## Contact
-
-For questions or support, please contact [your-email@example.com].
-
----
-
 # Enjoy building EcoFinds! 🌿
 
 
