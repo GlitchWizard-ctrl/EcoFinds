@@ -1,70 +1,153 @@
-# Getting Started with Create React App
+# EcoFinds - React Authentication with PostgreSQL Backend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a full-stack React application with user authentication implemented using a Node.js/Express backend connected to a **PostgreSQL** database. It supports user registration, login, JWT-based authentication, and protected routes.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- User signup and login with email, username, and password
+- Password hashing with bcrypt
+- JWT token generation and verification for secure authentication
+- React frontend with dark mode toggle and form validation using `react-hook-form`
+- Backend API built with Express and PostgreSQL database accessed via `pg` and `knex` (or `sequelize`)
+- CORS configured for frontend-backend communication
+- Token stored in `localStorage` with React state management for auth status
+- Protected frontend routes redirecting unauthenticated users to login
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+| Layer           | Technology                 |
+|-----------------|----------------------------|
+| Frontend        | React, react-router-dom, react-hook-form |
+| Backend         | Node.js, Express           |
+| Database        | PostgreSQL                 |
+| ORM/Query Builder | Knex.js or Sequelize (optional) |
+| Authentication  | JSON Web Tokens (JWT), bcryptjs |
+| Environment     | dotenv                    |
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js (v14+)
+- PostgreSQL installed and running
+- npm or yarn package manager
+- (Optional) Postman or curl for API testing
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Setup Instructions
 
-### `npm run eject`
+### 1. Clone the repository
+git clone https://github.com/yourusername/ecofinds.git
+cd ecofinds
+### 2. Backend Setup
+cd backend
+npm install
+#### Configure PostgreSQL database
+PORT=3001
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_postgres_username
+DB_PASSWORD=your_postgres_password
+DB_NAME=ecofinds_db
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRES_IN=1h
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+text
+- Create a PostgreSQL database, e.g., `ecofinds_db`.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Create a `.env` file in the `backend` folder with the following variables:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### Database schema
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Run the following SQL to create the `users` table:
 
-## Learn More
+CREATE TABLE users (
+id SERIAL PRIMARY KEY,
+email VARCHAR(255) UNIQUE NOT NULL,
+username VARCHAR(255) NOT NULL,
+password_hash VARCHAR(255) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The backend server will start on `http://localhost:3001`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+### 3. Frontend Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### Install dependencies
 
-### Analyzing the Bundle Size
+cd ../frontend
+npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Configure environment variables
 
-### Making a Progressive Web App
+Create a `.env` file in the frontend root with:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+REACT_APP_API_URL=http://localhost:3001
 
-### Advanced Configuration
+#### Start frontend development server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-### Deployment
+The React app will open at `http://localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## API Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Method | Endpoint           | Description                     | Request Body                             | Response                             |
+|--------|--------------------|---------------------------------|----------------------------------------|------------------------------------|
+| POST   | `/api/auth/register` | Register a new user             | `{ email, username, password }`        | `{ message, user, token }`          |
+| POST   | `/api/auth/login`    | Login existing user             | `{ email, password }`                   | `{ message, user, token }`          |
+| GET    | `/api/profile`       | Get profile info (protected)   | `Authorization: Bearer <token>` header | `{ email, username, created_at }`  |
+
+---
+
+## Usage
+
+- Navigate to `http://localhost:3000`
+- Register a new account or login with existing credentials
+- Upon successful login, you will be redirected to the homepage
+- JWT token is stored in localStorage and used to authenticate API requests
+
+---
+
+## Notes
+
+- Passwords are securely hashed using bcrypt before storage
+- JWT tokens expire after 1 hour (configurable in `.env`)
+- CORS is enabled on backend to allow requests from frontend origin
+- For production, consider HTTPS, secure cookies, and refresh tokens
+
+---
+
+## Troubleshooting
+
+- **"Failed to fetch" errors:** Ensure backend is running, API URL is correct, and CORS is configured properly.
+- **Database connection errors:** Verify PostgreSQL credentials and that the database server is running.
+- **Port conflicts:** Make sure ports 3000 (frontend) and 3001 (backend) are free or update `.env` accordingly.
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Contact
+
+For questions or support, please contact [your-email@example.com].
+
+---
+
+# Enjoy building EcoFinds! 🌿
+
+
+
